@@ -50,18 +50,15 @@ const movieSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
-  likes: [{
-    type: mongoose.Schema.Types.ObjectId,
-  }],
   movieId: {
-    type: mongoose.Schema.Types.Number,
+    type: Number,
     required: true,
   },
   nameRU: {
     type: String,
     required: true,
     validate: {
-      validator: (text) => validator.isAlphanumeric(text, 'ru-RU', {ignore:'-'}),
+      validator: (text) => validator.isAlphanumeric(text, 'ru-RU', { ignore: ' -' }),
       message: 'Название должно быть на русском языке',
     },
   },
@@ -69,11 +66,11 @@ const movieSchema = new mongoose.Schema({
     type: String,
     required: true,
     validate: {
-      validator: (text) => validator.isisAlphanumeric(text, 'en-AU', {ignore:'-'}),
+      validator: (text) => validator.isAlphanumeric(text, 'en-US', { ignore: ' -' }),
       message: 'Название должно быть на английском языке',
     },
   },
-})
+});
 
 const Movie = mongoose.model('movie', movieSchema);
 

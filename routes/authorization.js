@@ -3,7 +3,7 @@ const { celebrate, Joi } = require('celebrate');
 
 const { login, createUser } = require('../controllers/users');
 
-// роут создания пользователя
+// роут создания нового пользователя
 router.post('/signup', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),

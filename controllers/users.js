@@ -7,6 +7,8 @@ const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
 const ConflictError = require('../errors/ConflictError');
 
+const { NODE_ENV, JWT_SECRET } = process.env;
+
 // создание нового пользователя
 function createUser(req, res, next) {
   const {
@@ -14,7 +16,7 @@ function createUser(req, res, next) {
     email,
     password,
   } = req.body;
-  bcrypt.hash(password, 10) // хеширование пароля
+  bcrypt.hash(password, 10)
     .then((hash) => User.create({
       name,
       email,
@@ -28,7 +30,6 @@ function createUser(req, res, next) {
       },
     ))
     .catch((err) => {
-      console.log(err);
       if (err.name === 'ValidationError') {
         return next(new BadRequestError('Переданы некорректные данные'));
       }
@@ -39,37 +40,9 @@ function createUser(req, res, next) {
     });
 }
 
-// запрос всех пользователей
-function getUsers(_req, res, next) {
-  User.find({})
-    .then((users) => res.send(users))
-    .catch((err) => next(err));
-}
-
-// запрос пользователя по id
-function getUserById(req, res, next) {
-  const { userId } = req.params;
-  User.findById(userId)
-    .then((user) => {
-      console.log(userId);
-      if (!user) {
-        throw new NotFoundError('Пользователь с таким id не найден');
-      }
-      res.send(user);
-    })
-    .catch((err) => {
-      console.log(err.name);
-      if (err.name === 'CastError') {
-        return next(new BadRequestError('Переданы некорректные данные id пользователя'));
-      }
-      return next(err);
-    });
-}
-
 // запрос текущего пользователя
 function getCurrentUser(req, res, next) {
   const userId = req.user._id;
-  console.log(userId);
   User.findById(userId)
     .then((user) => {
       if (!user) {
@@ -78,6 +51,23 @@ function getCurrentUser(req, res, next) {
       return res.send(user);
     })
     .catch((err) => next(err));
+}
+
+// создание контроллера аутентификации
+function login(req, res, next) {
+  const { email, password } = req.body;
+
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      // создание токена
+      const token = jwt.sign(
+        { _id: user._id }, // зашифрованный в строку объект пользователя
+        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+        { expiresIn: '7d' },
+      );
+      res.send({ token });
+    })
+    .catch(next);
 }
 
 // замена данных пользователя
@@ -93,7 +83,6 @@ function patchUser(req, res, next) {
     },
   )
     .then((user) => res.send(user))
-    // .then((user) => console.log({ name }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return next(new BadRequestError('Переданы некорректные данные'));
@@ -102,31 +91,9 @@ function patchUser(req, res, next) {
     });
 }
 
-// создание контроллера аутентификации
-function login(req, res, next) {
-  const { email, password } = req.body;
-
-  return User.findUserByCredentials(email, password)
-    .then((user) => {
-      // создание токена
-      const token = jwt.sign(
-        { _id: user._id }, // зашифрованный в строку объект пользователя
-        'some-secret-key',
-        // NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
-        { expiresIn: '7d' }, // действие токена 7 дней
-      );
-      console.log(token);
-      console.log(user);
-      res.send({ token });
-    })
-    .catch(next);
-}
-
 module.exports = {
   createUser,
-  getUsers,
-  getUserById,
+  login,
   getCurrentUser,
   patchUser,
-  login,
-}
+};
