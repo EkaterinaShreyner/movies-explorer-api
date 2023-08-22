@@ -7,6 +7,7 @@ const helmet = require('helmet');
 const { errors } = require('celebrate');
 
 const auth = require('./middlewares/auth');
+const limiter = require('./middlewares/rateLimit');
 const usersRouter = require('./routes/users');
 const moviesRouter = require('./routes/movies');
 const authorizationRouter = require('./routes/authorization');
@@ -35,7 +36,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(requestLogger);
 
+app.use(limiter);
+
 app.use('/', authorizationRouter);
+
 app.use(auth);
 
 app.use('/users', usersRouter);
