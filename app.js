@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const { errors } = require('celebrate');
+const cors = require('cors');
 
 const auth = require('./middlewares/auth');
 const limiter = require('./middlewares/rateLimit');
@@ -15,9 +16,11 @@ const NotFoundError = require('./errors/NotFoundError');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const errorsHandler = require('./middlewares/errorsHandler');
 
-const { PORT = 3000 } = process.env;
+const { PORT = 4000 } = process.env;
 const { MONGO_URL } = process.env;
 const app = express();
+
+app.use(cors({ origin: ['http://localhost:4001', 'https://mesto.project.nomoreparties.co'] }));
 
 app.use(helmet());
 
