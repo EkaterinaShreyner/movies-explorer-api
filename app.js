@@ -20,8 +20,7 @@ const { PORT = 4000 } = process.env;
 const { MONGO_URL } = process.env;
 const app = express();
 
-// app.use(cors({ origin: ['http://localhost:4001', 'https://mesto.project.nomoreparties.co'] }));
-app.use(cors());
+app.use(cors({ origin: ['http://localhost:3001', 'https://my-movies.nomoredomainsicu.ru'] }));
 
 app.use(helmet());
 
