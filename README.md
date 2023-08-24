@@ -5,9 +5,9 @@
 ## Директории 
 
 /routes - папка с файлами роутинга 
-/models - папка с файлами описания схем пользователя и фильмов
-/controllers - папка с файлами котроллеров пользователями и фильмов
-/errors - папка с файлами конструктора ошибок
+/models - папка с файлами описания схем пользователя и фильмов  
+/controllers - папка с файлами котроллеров пользователями и фильмов  
+/errors - папка с файлами конструктора ошибок  
 
 ## Функционал
 
@@ -19,20 +19,20 @@
 
 ## Запуск проекта
 
-npm run start — запускает сервер
+npm run start — запускает сервер  
 npm run dev — запускает сервер с hot-reload
 
 
 ## Реализован с помощью
 
-Node.js
-Express
-JavaScript
-MongoDB
+- Node.js
+- Express
+- JavaScript
+- MongoDB
 
 
 ## Ссылки
 
-Репозиторий: https://github.com/EkaterinaShreyner/movies-explorer-api.git
-IP 158.160.107.131
-Backend https://api.my-movies.nomoredomainsicu.ru/
+Репозиторий: https://github.com/EkaterinaShreyner/movies-explorer-api.git  
+IP 158.160.107.131  
+Backend https://api.my-movies.nomoredomainsicu.ru/  

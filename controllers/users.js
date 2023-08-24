@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
-const { SUCCESS_CREATE__REQUEST } = require('../utils/constants');
+const { SUCCESS_CREATE__REQUEST, errorMessage } = require('../utils/constants');
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
 const ConflictError = require('../errors/ConflictError');
@@ -31,10 +31,10 @@ function createUser(req, res, next) {
     ))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return next(new BadRequestError('Переданы некорректные данные'));
+        return next(new BadRequestError(errorMessage.userData));
       }
       if (err.code === 11000) {
-        return next(new ConflictError('Пользователь с таким email зарегистрирован'));
+        return next(new ConflictError(errorMessage.userEmail));
       }
       return next(err);
     });
@@ -46,7 +46,7 @@ function getCurrentUser(req, res, next) {
   User.findById(userId)
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('Пользователь c таким id не найден');
+        throw new NotFoundError(errorMessage.userId);
       }
       return res.send(user);
     })
@@ -72,11 +72,11 @@ function login(req, res, next) {
 
 // замена данных пользователя
 function patchUser(req, res, next) {
-  const { name } = req.body;
+  const { name, email } = req.body;
   const userId = req.user._id;
   User.findByIdAndUpdate(
     userId,
-    { name },
+    { name, email },
     {
       new: true, // обработчик then получит на вход обновлённую запись
       runValidators: true, // данные будут валидированы перед изменением
@@ -85,7 +85,10 @@ function patchUser(req, res, next) {
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return next(new BadRequestError('Переданы некорректные данные'));
+        return next(new BadRequestError(errorMessage.userData));
+      }
+      if (err.code === 11000) {
+        return next(new ConflictError(errorMessage.userEmail));
       }
       return next(err);
     });

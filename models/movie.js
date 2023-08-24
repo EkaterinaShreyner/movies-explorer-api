@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 
+const { errorMessage } = require('../utils/constants');
+
 const movieSchema = new mongoose.Schema({
   country: {
     type: String,
@@ -27,7 +29,7 @@ const movieSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator: (url) => validator.isURL(url),
-      message: 'Некорректный URL',
+      message: errorMessage.url,
     },
   },
   trailerLink: {
@@ -35,7 +37,7 @@ const movieSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator: (url) => validator.isURL(url),
-      message: 'Некорректный URL',
+      message: errorMessage.url,
     },
   },
   thumbnail: {
@@ -43,7 +45,7 @@ const movieSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator: (url) => validator.isURL(url),
-      message: 'Некорректный URL',
+      message: errorMessage.url,
     },
   },
   owner: {
@@ -59,7 +61,7 @@ const movieSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator: (text) => validator.isAlphanumeric(text, 'ru-RU', { ignore: ' -' }),
-      message: 'Название должно быть на русском языке',
+      message: errorMessage.langRu,
     },
   },
   nameEN: {
@@ -67,7 +69,7 @@ const movieSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator: (text) => validator.isAlphanumeric(text, 'en-US', { ignore: ' -' }),
-      message: 'Название должно быть на английском языке',
+      message: errorMessage.langEn,
     },
   },
 });

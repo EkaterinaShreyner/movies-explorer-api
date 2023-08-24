@@ -15,16 +15,17 @@ const authorizationRouter = require('./routes/authorization');
 const NotFoundError = require('./errors/NotFoundError');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const errorsHandler = require('./middlewares/errorsHandler');
+const { errorMessage } = require('./utils/constants');
 
 const { PORT = 4000 } = process.env;
-const { MONGO_URL } = process.env;
+const { bitfilmsdb } = process.env;
 const app = express();
 
 app.use(cors({ origin: ['http://localhost:3001', 'https://my-movies.nomoredomainsicu.ru'] }));
 
 app.use(helmet());
 
-mongoose.connect(MONGO_URL, {
+mongoose.connect(bitfilmsdb, {
   useNewUrlParser: true,
 })
   .then(() => {
@@ -49,7 +50,7 @@ app.use('/users', usersRouter);
 app.use('/movies', moviesRouter);
 
 app.use('/*', (_req, _res, next) => {
-  next(new NotFoundError('Страница не найдена'));
+  next(new NotFoundError(errorMessage.notFound));
 });
 
 app.use(errorLogger);
