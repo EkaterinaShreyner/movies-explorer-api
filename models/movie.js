@@ -59,18 +59,18 @@ const movieSchema = new mongoose.Schema({
   nameRU: {
     type: String,
     required: true,
-    validate: {
-      validator: (text) => validator.isAlphanumeric(text, 'ru-RU', { ignore: ' -' }),
-      message: errorMessage.langRu,
-    },
+    // validate: {
+    //   validator: (text) => validator.isAlphanumeric(text, 'ru-RU', { ignore: '.,:?! -' }),
+    //   message: errorMessage.langRu,
+    // },
   },
   nameEN: {
     type: String,
     required: true,
-    validate: {
-      validator: (text) => validator.isAlphanumeric(text, 'en-US', { ignore: ' -' }),
-      message: errorMessage.langEn,
-    },
+    // validate: {
+    //   validator: (text) => validator.isAlphanumeric(text, 'en-US', { ignore: '.,:?! -' }),
+    //   message: errorMessage.langEn,
+    // },
   },
 });
 
